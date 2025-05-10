@@ -9,7 +9,7 @@ Please feel free to add to the ideas and share which part of the project you wou
 
 **AI Agent - Machine Learning Development:**
 
-1. Based on 's idea, use AlphaVantage to develop the [LSTM model](https://www.alphavantage.co/stock-prediction-deep-neural-networks-lstm/#predict-future-price) and test it on stocks from the dataest.
+1. (Sandrine) Based on 's idea, use AlphaVantage to develop the [LSTM model](https://www.alphavantage.co/stock-prediction-deep-neural-networks-lstm/#predict-future-price) and test it on stocks from the dataest.
 2. Use the same model to [predict future prices](https://www.alphavantage.co/stock-prediction-deep-neural-networks-lstm/#predict-future-price) of certain stocks.
 3. Create an AI agent that is an expert in interpreting quarterly earning reports and transcripts from earning report calls
 4. Create an AI agent that identifies technical indicators based on stock price movements
