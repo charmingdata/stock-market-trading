@@ -16,4 +16,4 @@ Please feel free to add to the ideas and share which part of the project you wou
 5. Develop a Decision-making AI agent that receives analyses from the other AIs and decides if, when, and how to enter a trade.
 
 **Execution**
-1. Create an AI that can execute trades [using Alpaca](https://alpaca.markets/) (to open or close trades) 
+1. (Ted) Create an AI that can execute trades [using Alpaca](https://alpaca.markets/) (to open or close trades) 
