@@ -2,7 +2,7 @@ Please feel free to add to the ideas and share which part of the project you wou
 
 **Data Visualization:**
 
-1. Get historical prices for the 42 stocks and simulate a trade taking place (after observation date) when the price falls between the enter_from and enter_to values.
+1. (Adam) Get historical prices for the 42 stocks and simulate a trade taking place (after observation date) when the price falls between the enter_from and enter_to values.
     - Calculate how many stocks reached pt1, pt2, and pt3 after one week, two weeks, and one month (two scenarios: A. include the actual stop losses and B. set a standard 8% stop losses to all trades). Create Plotly graphs to show the results.
 2. Calculate the amount of profit / loss of the complete trading portfolio. Also show profit / loss by sector, by trade type (long, short). Create Plotly graphs to show the results.
 3. Based on Malini's idea to use S&P 500 data, compare portfolio's performance to the S&P 500 within the same timeframe
