@@ -14,3 +14,6 @@ Please feel free to add to the ideas and share which part of the project you wou
 3. Create an AI agent that is an expert in interpreting quarterly earning reports and transcripts from earning report calls
 4. Create an AI agent that identifies technical indicators based on stock price movements
 5. Develop a Decision-making AI agent that receives analyses from the other AIs and decides if, when, and how to enter a trade.
+
+**Execution**
+1. Create an AI that can execute trades [using Alpaca](https://alpaca.markets/) (to open or close trades) 
