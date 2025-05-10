@@ -6,6 +6,7 @@ Please feel free to add to the ideas and share which part of the project you wou
     - Calculate how many stocks reached pt1, pt2, and pt3 after one week, two weeks, and one month (two scenarios: A. include the actual stop losses and B. set a standard 8% stop losses to all trades). Create Plotly graphs to show the results.
 2. Calculate the amount of profit / loss of the complete trading portfolio. Also show profit / loss by sector, by trade type (long, short). Create Plotly graphs to show the results.
 3. Based on Malini's idea to use S&P 500 data, compare portfolio's performance to the S&P 500 within the same timeframe
+4. Incorporate [Technical Analysis](https://github.com/plotly/dash-technical-charting/tree/master) into the app
 
 **AI Agent - Machine Learning Development:**
 
