@@ -1,10 +1,17 @@
-import aiohttp
-import asyncio
+"""SEC EDGAR client for fetching financial metrics via MCP browser automation."""
+
 from typing import Dict, Optional
-from datetime import datetime
+import aiohttp
 
 class EdgarClient:
+    """Client for fetching and parsing SEC EDGAR filings."""
+    
     def __init__(self, mcp_server_url: str = "http://localhost:3000"):
+        """Initialize the client.
+        
+        Args:
+            mcp_server_url: URL of the MCP browser automation server
+        """
         self.mcp_server_url = mcp_server_url
         self.headers = {
             "User-Agent": "Your Company Name yourname@domain.com",
