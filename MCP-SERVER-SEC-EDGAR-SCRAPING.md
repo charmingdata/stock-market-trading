@@ -1,7 +1,20 @@
-# SEC EDGAR Data Ingestion Component
+# SEC EDGAR Online Data Ingestion Component
 
-A Python client for fetching financial metrics from SEC EDGAR filings via MCP browser automation.
+A Python client for fetching financial metrics from SEC EDGAR filings (10K, 10Q reports, etc.) via MCP browser automation.
 Part of the Charming Data Stock Market Trading project (May-June 2025).
+
+## Integration Roadmap
+- Uses [Browserbase MCP Server](https://github.com/browserbase/mcp-server-browserbase) for browser automation
+- Leverages [Stagehand MCP Server](https://github.com/browserbase/mcp-server-browserbase/tree/main/stagehand) for DOM interactions
+- Supports headless browser-based data extraction
+- Ready for remote browser integration
+
+## Technical Notes
+"Remote browser" refers to:
+- Browser instances running on the MCP server
+- Headless Chrome/Firefox browsers
+- Controlled via MCP Server's API
+- Enables stateless web scraping
 
 ## Features
 - Pydantic models for SEC filing validation
