@@ -85,12 +85,18 @@ npm start
 ```
 
 ## Current Status
-- MVP implementation with mock data responses
+- Project structure reorganized and documented
+- Basic models implemented with Pydantic
+- Test imports fixed per reviewer feedback
+- MVP implementation with mock responses
 - Basic test coverage for data validation
 - Ready for MCP server integration
 
 ## Next Steps
-- Integrate with MCP server for live scraping
-- Add XBRL parsing for actual metrics
-- Implement SEC rate limiting
+- Implement edgar client functionality
+  - Live scraping via MCP server
+  - XBRL parsing for metrics
+  - SEC rate limiting
+- Add comprehensive test coverage
+- Set up CI/CD pipeline
 - Add historical data support
