@@ -48,16 +48,20 @@ if __name__ == "__main__":
 ```
 
 ## Project Structure
+## Project Structure
 ```
 .
 ├── src/
-│   ├── edgar_client.py    # Main client implementation
-│   └── models/
-│       └── filing.py      # SEC filing data models
-├── tests/
-│   └── test_edgar_client.py
-├── pytest.ini             # Test configuration
-└── requirements.txt       # Project dependencies
+│   ├── edgar/             # Core implementation
+│   │   ├── client.py     # Main client
+│   │   └── session.py    # Session management
+│   └── models/           # Data models
+│       ├── company.py    # Company identifiers
+│       └── metrics.py    # Financial metrics
+├── examples/             # Usage examples
+│   └── tesla_10k_scraper.py
+├── tests/               # Test suite
+└── MCP-SERVER-SEC-EDGAR-SCRAPING.md
 ```
 
 ## Development
