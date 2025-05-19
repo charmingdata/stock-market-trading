@@ -36,18 +36,27 @@ pip3 install -r requirements.txt
 ## Usage
 
 ```python
-from src.edgar_client import EdgarClient
+from src.edgar.client import EdgarClient
+from src.models.company import CompanyIdentifier
 
 async def main():
-    client = EdgarClient()
-    metrics = await client.get_latest_10q_metrics(cik="1318605")  # Tesla
-    print(metrics)
+    tesla = CompanyIdentifier(
+        cik="1318605",
+        company_name="Tesla, Inc."
+    )
+    
+    async with EdgarClient() as client:
+        filing = await client.find_latest_filing(
+            cik=tesla.cik,
+            form_type="10-K"
+        )
+        print(f"Latest 10-K: {filing}")
 
 if __name__ == "__main__":
+    import asyncio
     asyncio.run(main())
 ```
 
-## Project Structure
 ## Project Structure
 ```
 .
