@@ -1,7 +1,12 @@
-# Python bytecode
+# Python, incl. bytecode
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+.pytest_cache/
+*.egg-info/
 
 # Distribution/packaging
 dist/
@@ -16,9 +21,14 @@ env/
 
 # IDE settings
 .vscode/
+!.vscode/extensions.json
 .idea/
 
 # Testing
+.vscode/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Project specific
+**/archive/
