@@ -3,11 +3,11 @@ import asyncio
 from unittest.mock import AsyncMock, patch
 import sys
 import os
-from typing import Dict
 from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.edgar_client import EdgarClient, EdgarMetrics
+from src.edgar_client import EdgarClient
+from src.edgar.models import EdgarMetrics
 
 @pytest.mark.asyncio
 async def test_client_initialization():
@@ -94,3 +94,18 @@ async def test_error_handling():
     async with EdgarClient() as client:
         with pytest.raises(ValueError):
             await client.get_latest_10q_metrics(cik="invalid")
+
+@pytest.mark.asyncio
+async def test_company_search():
+    """Test SEC EDGAR company search integration."""
+    search = EdgarSearch()
+    results = await search.find_company_filings(
+        company="TESLA",
+        form_types=["10-K", "10-Q"],
+        start_date="2024-01-01"
+    )
+    
+    # Verify structure matches our model
+    assert isinstance(results[0], SecFiling)
+    assert results[0].form_type in ["10-K", "10-Q"]
+    assert "sec.gov" in results[0].document_url
