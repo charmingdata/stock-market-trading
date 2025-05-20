@@ -16,6 +16,26 @@ Part of the Charming Data Stock Market Trading project (May-June 2025).
 - Controlled via MCP Server's API
 - Enables stateless web scraping
 
+### Browser Automation Options
+
+#### Current: Browserbase MCP
+- Basic browser automation
+- Local development friendly
+- Simple setup process
+- Good for MVP development
+- Core team familiarity
+- Zero cost barrier
+
+#### Alternative: Bright Data MCP
+- Enterprise-grade solution
+- Built-in XBRL parsing
+- Anti-blocking features
+- Better for production use
+- Higher cost barrier
+- New learning curve
+
+Note: Initial development focuses on Browserbase MCP. Bright Data consideration deferred to production phase.
+
 ## Features
 - Pydantic models for SEC filing validation
 - Async client for EDGAR API integration
@@ -149,3 +169,8 @@ export PYTHONPATH="${PYTHONPATH}:/path/to/project"
 - Add comprehensive test coverage
 - Set up CI/CD pipeline
 - Add historical data support
+
+## Notes
+- Current focus on Browserbase MCP integration
+- Production scaling options to be evaluated
+- Alternative tools considered after MVP
