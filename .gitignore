@@ -13,7 +13,8 @@ dist/
 build/
 *.egg-info/
 
-# Virtual environments
+# Virtual 
+venv_mcp_edgar/
 venv/
 env/
 .env/
@@ -25,7 +26,6 @@ env/
 .idea/
 
 # Testing
-.vscode/
 .pytest_cache/
 .coverage
 htmlcov/
