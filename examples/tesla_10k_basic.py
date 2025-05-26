@@ -1,45 +1,23 @@
-"""Basic Tesla 10-K scraper demonstrating core functionality."""
-
+"""Example script for fetching Tesla's financial metrics."""
 import asyncio
 import logging
-from datetime import datetime
+from src.edgar.client import EdgarClient
+from src.edgar.models.financial_statement_items import EdgarMetrics
 
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-async def fetch_tesla_10k():
-    """Fetch Tesla's latest 10-K filing using mock data."""
-    logger.info("Fetching Tesla 10-K filing...")
-    
-    # Mock successful response for initial testing
-    filing = {
-        "cik": "1318605",
-        "company": "Tesla, Inc.",
-        "form": "10-K",
-        "date": datetime.now().isoformat(),
-        "status": "success",
-        "metrics": {
-            "revenue": "$81.4B",
-            "net_income": "$12.6B",
-            "eps": "3.63"
-        }
-    }
-    
-    return filing
-
 async def main():
+    """Fetch Tesla's latest financial metrics from SEC EDGAR."""
     try:
-        result = await fetch_tesla_10k()
-        print("\nTesla 10-K Filing:")
-        print(f"Company: {result['company']}")
-        print(f"Form: {result['form']}")
-        print(f"Date: {result['date']}")
-        print("\nKey Metrics:")
-        print(f"Revenue: {result['metrics']['revenue']}")
-        print(f"Net Income: {result['metrics']['net_income']}")
-        print(f"EPS: {result['metrics']['eps']}")
+        async with EdgarClient() as client:
+            logger.info("Fetching Tesla financials...")
+            metrics = await client.get_tesla_financials()
+            logger.info(f"Tesla Metrics: {metrics}")
     except Exception as e:
-        logger.error(f"Error: {e}")
+        logger.error(f"Failed to fetch metrics: {e}")
 
 if __name__ == "__main__":
     asyncio.run(main())
+    
