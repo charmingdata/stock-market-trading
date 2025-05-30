@@ -208,12 +208,15 @@ class EdgarClient:
         except Exception as e:
             logger.warning(f"Error closing browser session: {e}")
 
-    async def navigate(self, url: str) -> None:
+    async def navigate(self, url: str) -> bool:
         """Navigate the browser to a URL.
         
         Args:
             url: URL to navigate to
             
+        Returns:
+            bool: True if navigation was successful, False otherwise
+                
         Raises:
             MCPServerConnectionError: If navigation fails
             RuntimeError: If no active session
@@ -224,22 +227,30 @@ class EdgarClient:
         try:
             logger.info(f"Navigating to {url}")
             
+            # Use the execute endpoint with navigate command instead of direct navigate endpoint
             async with self.session.post(
-                f"{self.mcp_server_url}/session/{self.session_id}/navigate",
+                f"{self.mcp_server_url}/session/{self.session_id}/execute",
                 headers=self.headers,
-                json={"url": url}
+                json={
+                    "command": "navigate",
+                    "args": {"url": url}
+                }
             ) as response:
                 if response.status != 200:
                     error_text = await response.text()
                     logger.error(f"Navigation failed: {response.status}, {error_text}")
-                    raise EdgarClientException(f"Navigation failed: {error_text}")
+                    return False
                 
                 logger.info(f"Successfully navigated to {url}")
+                return True
                 
         except aiohttp.ClientError as e:
             logger.error(f"Navigation failed due to connection error: {e}")
-            raise EdgarClientException(f"Navigation failed: {e}")
-
+            return False
+        except Exception as e:
+            logger.error(f"Unexpected error during navigation: {e}")
+            return False
+        
     async def get_page_content(self) -> str:
         """Get the current page content.
         

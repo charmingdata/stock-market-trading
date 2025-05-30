@@ -5,7 +5,7 @@ This guide covers the example scripts in this directory, focusing on the simulat
 ## Demo Scripts
 
 ### Current Development Demo
-- `edgar_data_simulation.py` - Demonstrates the architecture with simulated data extraction
+- `edgar_mock_demo_runner.py` - Demonstrates the architecture with simulated data extraction
 
 ### Package Structure
 - `edgar_mock_demo/` - Modules for the simulation demo
@@ -23,7 +23,7 @@ This guide covers the example scripts in this directory, focusing on the simulat
 
 ```bash
 # Run the simulation demo with MCP server check:
-python3 edgar_data_simulation.py --extract-data
+python3 edgar_mock_demo_runner.py --extract-data
 
 # Run in full mock mode (no MCP server needed):
-python3 edgar_data_simulation.py --mock --extract-data
+python3 edgar_mock_demo_runner.py --mock --extract-data

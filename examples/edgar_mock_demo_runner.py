@@ -7,7 +7,7 @@ This script demonstrates:
 3. Tesla 10-K financial data extraction
 
 Usage:
-    python3 examples/edgar_mock_demo.py [--server-url URL] [--extract-data] [--mock]
+    python3 examples/edgar_mock_demo_runner.py [--server-url URL] [--extract-data] [--mock]
 """
 import asyncio
 import argparse

@@ -1,0 +1,40 @@
+{
+  "company": "Tesla, Inc.",
+  "ticker": "TSLA",
+  "period_end": "2022-12-31",
+  "income_statement": {
+    "Revenue": "$81,462,000,000",
+    "Cost of Revenue": "$63,493,000,000",
+    "Gross Profit": "$17,969,000,000",
+    "Operating Income": "$13,656,000,000",
+    "Research and Development": "$3,075,000,000",
+    "Selling, General & Administrative": "$4,984,000,000",
+    "Net Income": "$12,556,000,000",
+    "Earnings Per Share (Basic)": "$3.99",
+    "Earnings Per Share (Diluted)": "$3.62"
+  },
+  "balance_sheet": {
+    "Cash and Cash Equivalents": "$22,185,000,000",
+    "Accounts Receivable": "$2,583,000,000",
+    "Inventory": "$12,842,000,000",
+    "Total Current Assets": "$41,230,000,000",
+    "Property, Plant and Equipment": "$28,558,000,000",
+    "Total Assets": "$82,338,000,000",
+    "Accounts Payable": "$11,113,000,000",
+    "Total Current Liabilities": "$18,138,000,000",
+    "Long-term Debt": "$2,102,000,000",
+    "Total Liabilities": "$29,262,000,000",
+    "Total Equity": "$53,076,000,000"
+  },
+  "cash_flow_statement": {
+    "Net Income": "$12,556,000,000",
+    "Depreciation and Amortization": "$5,084,000,000",
+    "Changes in Working Capital": "$(3,138,000,000)",
+    "Net Cash Provided by Operating Activities": "$14,724,000,000",
+    "Capital Expenditures": "$(7,163,000,000)",
+    "Net Cash Used in Investing Activities": "$(6,336,000,000)",
+    "Net Cash Used in Financing Activities": "$(475,000,000)",
+    "Net Change in Cash": "$7,913,000,000"
+  },
+  "source": "mock"
+}
