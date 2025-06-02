@@ -1,8 +1,8 @@
 import pytest
 from datetime import datetime
 from unittest.mock import AsyncMock, patch
-from src.edgar.search import EdgarSearch
-from src.edgar.models import SecFiling
+from edgar.client.search_params import EdgarSearch
+from edgar.models.financial_statement_items import SecFiling
 
 @pytest.mark.asyncio
 async def test_search_tesla_filings():

@@ -28,16 +28,6 @@ async def check_mcp_server(server_url=None):
                 if response.status == 200:
                     print(f"✅ MCP Server is RUNNING at {mcp_server_url}")
                     
-                    # Check /session endpoint (for creating browser sessions)
-                    session_endpoint_ok = await check_session_endpoint(session, mcp_server_url)
-                    
-                    if session_endpoint_ok:
-                        print("\n✅ MCP server session creation is available")
-                        return True
-                    else:
-                        print("\n❌ MCP server is running but session creation failed")
-                        print_troubleshooting_info(mcp_server_url)
-                        return False
                 else:
                     print(f"❌ MCP server returned status {response.status}")
                     print_troubleshooting_info(mcp_server_url)
@@ -46,36 +36,6 @@ async def check_mcp_server(server_url=None):
             print(f"❌ Cannot connect to MCP server: {e}")
             print_troubleshooting_info(mcp_server_url)
             return False
-
-async def check_session_endpoint(session, server_url):
-    """Check if the /session endpoint is working."""
-    try:
-        print(f"🔍 Testing session creation at {server_url}/session...")
-        
-        # Test with a minimal payload
-        async with session.post(
-            f"{server_url}/session",
-            json={"browserType": "chromium"}
-        ) as response:
-            if response.status == 200:
-                data = await response.json()
-                session_id = data.get("sessionId")
-                
-                if session_id:
-                    print(f"✅ Successfully created test session: {session_id}")
-                    
-                    # Clean up by closing the session
-                    await close_test_session(session, server_url, session_id)
-                    return True
-                else:
-                    print("❌ Session creation response missing sessionId")
-                    return False
-            else:
-                print(f"❌ Session creation failed with status {response.status}")
-                return False
-    except Exception as e:
-        print(f"❌ Error testing session endpoint: {e}")
-        return False
 
 async def close_test_session(session, server_url, session_id):
     """Close a test browser session."""

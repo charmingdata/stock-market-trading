@@ -13,6 +13,10 @@ DEFAULT_HEADERS = {
     "Content-Type": "application/json"
 }
 
+# Maximum Results Limit
+MAX_RESULTS_LIMIT = 100
+DEFAULT_MAX_RESULTS = MAX_RESULTS_LIMIT  
+
 # Form Types
 FORM_10K = "10-K"
 FORM_10Q = "10-Q"

@@ -2,9 +2,14 @@
 import aiohttp
 import os
 import logging
+import uuid
 from typing import Optional, Dict, Literal, Any
 
+from .session import check_server_status
+from .filing_access import get_company_filings, _get_filing_url
+from .exceptions import MCPServerConnectionError
 from .scraper import EdgarScraper   
+from .search_params import _search_filings
 from ..models import SecFiling, EdgarSearchCriteria, FinancialStatementItems
 from ..constants import (
     SEC_EDGAR_SEARCH_URL,
@@ -19,20 +24,6 @@ logger = logging.getLogger(__name__)
 MCP_SERVER_URL_ENV = "MCP_SERVER_URL"
 DEFAULT_MCP_SERVER_URL = "http://localhost:3000"
 DEFAULT_USER_AGENT = "Test Company test@example.com"
-
-class EdgarClientException(Exception):
-    """Base exception for Edgar client errors."""
-    pass
-
-class MCPServerConnectionError(EdgarClientException):
-    """Exception raised when MCP server connection fails."""
-    def __init__(self, url: str, original_error: Exception = None):
-        self.url = url
-        self.original_error = original_error
-        message = f"Cannot connect to MCP server at {url}"
-        if original_error:
-            message += f": {original_error}"
-        super().__init__(message)
 
 class EdgarClient:
     """Client for fetching and parsing SEC EDGAR filings."""
@@ -72,217 +63,6 @@ class EdgarClient:
         
         logger.info(f"EdgarClient initialized with MCP server at {self.mcp_server_url}")
         
-    async def __aenter__(self):
-        """Enable async context management."""
-        logger.info("Creating aiohttp session")
-        self.session = aiohttp.ClientSession()
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Cleanup session on exit."""
-        logger.info("Closing client session")
-        if self.session_id:
-            try:
-                await self._close_browser_session()
-            except Exception as e:
-                logger.warning(f"Error closing browser session: {e}")
-        
-        if self.session:
-            await self.session.close()
-        
-        self.session = None
-        self.session_id = None
-
-    async def check_server_status(self) -> Dict[str, Any]:
-        """Check if MCP server is running and available.
-        
-        Returns:
-            Dictionary with server status information
-            
-        Example:
-            >>> async with EdgarClient() as client:
-            ...     status = await client.check_server_status()
-            ...     print(f"MCP server connected: {status['connected']}")
-        """
-        async with aiohttp.ClientSession() as session:
-            try:
-                url = f"{self.mcp_server_url}/status"
-                logger.info(f"Checking MCP server status at {url}")
-                
-                async with session.get(url, timeout=5) as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        logger.info(f"MCP server is running: {data}")
-                        return {
-                            "connected": True,
-                            "version": data.get("version", "unknown"),
-                            "status": "running"
-                        }
-                    else:
-                        logger.warning(f"MCP server returned status {response.status}")
-                        return {
-                            "connected": False,
-                            "status": "error",
-                            "error": f"Server returned {response.status}"
-                        }
-            except aiohttp.ClientError as e:
-                logger.warning(f"Failed to connect to MCP server: {e}")
-                return {
-                    "connected": False,
-                    "status": "unavailable",
-                    "error": str(e)
-                }
-            except Exception as e:
-                logger.error(f"Unexpected error checking server status: {e}")
-                return {
-                    "connected": False,
-                    "status": "error",
-                    "error": str(e)
-                }
-
-    async def _create_session(self) -> str:
-        """Create a new browser automation session.
-        
-        Returns:
-            Session ID for the created browser session
-            
-        Raises:
-            MCPServerConnectionError: If session creation fails
-            RuntimeError: If client is not initialized
-        """
-        if not self.session:
-            raise RuntimeError("Client not initialized. Use async with.")
-            
-        try:
-            logger.info(f"Creating browser session at {self.mcp_server_url}/session")
-            
-            async with self.session.post(
-                f"{self.mcp_server_url}/session",
-                headers=self.headers,
-                json={"browserType": "chromium"}
-            ) as response:
-                if response.status != 200:
-                    error_text = await response.text()
-                    logger.error(f"Session creation failed: {response.status}, {error_text}")
-                    raise MCPServerConnectionError(
-                        self.mcp_server_url, 
-                        Exception(f"Status {response.status}: {error_text}")
-                    )
-                
-                data = await response.json()
-                session_id = data.get("sessionId")
-                
-                if not session_id:
-                    logger.error("No sessionId in response")
-                    raise MCPServerConnectionError(
-                        self.mcp_server_url, 
-                        Exception("No sessionId in response")
-                    )
-                
-                logger.info(f"Browser session created: {session_id}")
-                return session_id
-                
-        except aiohttp.ClientError as e:
-            logger.error(f"MCP server connection error: {e}")
-            raise MCPServerConnectionError(self.mcp_server_url, e)
-        except Exception as e:
-            logger.error(f"Unexpected error creating session: {e}")
-            raise MCPServerConnectionError(self.mcp_server_url, e)
-
-    async def _close_browser_session(self) -> None:
-        """Close the browser session on the MCP server."""
-        if not self.session_id or not self.session:
-            return
-            
-        try:
-            logger.info(f"Closing browser session: {self.session_id}")
-            
-            async with self.session.delete(
-                f"{self.mcp_server_url}/session/{self.session_id}",
-                headers=self.headers
-            ) as response:
-                if response.status != 200:
-                    logger.warning(f"Session close returned status {response.status}")
-                else:
-                    logger.info(f"Browser session closed: {self.session_id}")
-        except Exception as e:
-            logger.warning(f"Error closing browser session: {e}")
-
-    async def navigate(self, url: str) -> bool:
-        """Navigate the browser to a URL.
-        
-        Args:
-            url: URL to navigate to
-            
-        Returns:
-            bool: True if navigation was successful, False otherwise
-                
-        Raises:
-            MCPServerConnectionError: If navigation fails
-            RuntimeError: If no active session
-        """
-        if not self.session_id:
-            self.session_id = await self._create_session()
-            
-        try:
-            logger.info(f"Navigating to {url}")
-            
-            # Use the execute endpoint with navigate command instead of direct navigate endpoint
-            async with self.session.post(
-                f"{self.mcp_server_url}/session/{self.session_id}/execute",
-                headers=self.headers,
-                json={
-                    "command": "navigate",
-                    "args": {"url": url}
-                }
-            ) as response:
-                if response.status != 200:
-                    error_text = await response.text()
-                    logger.error(f"Navigation failed: {response.status}, {error_text}")
-                    return False
-                
-                logger.info(f"Successfully navigated to {url}")
-                return True
-                
-        except aiohttp.ClientError as e:
-            logger.error(f"Navigation failed due to connection error: {e}")
-            return False
-        except Exception as e:
-            logger.error(f"Unexpected error during navigation: {e}")
-            return False
-        
-    async def get_page_content(self) -> str:
-        """Get the current page content.
-        
-        Returns:
-            HTML content of the current page
-            
-        Raises:
-            EdgarClientException: If content retrieval fails
-        """
-        if not self.session_id:
-            self.session_id = await self._create_session()
-            
-        try:
-            logger.info("Retrieving page content")
-            
-            async with self.session.get(
-                f"{self.mcp_server_url}/session/{self.session_id}/content",
-                headers=self.headers
-            ) as response:
-                if response.status != 200:
-                    error_text = await response.text()
-                    logger.error(f"Content retrieval failed: {response.status}, {error_text}")
-                    raise EdgarClientException(f"Content retrieval failed: {error_text}")
-                
-                content = await response.text()
-                logger.info(f"Retrieved {len(content)} bytes of content")
-                return content
-                
-        except aiohttp.ClientError as e:
-            logger.error(f"Content retrieval failed due to connection error: {e}")
-            raise EdgarClientException(f"Content retrieval failed: {e}")
-
     async def get_10k_metrics(
         self,
         cik: str,
@@ -438,6 +218,25 @@ class EdgarClient:
             fiscal_quarter=fiscal_period if form_type == "10-Q" else None
         )
         
-        # TODO: Implement these helper methods
-        filing = await self._search_filings(search)
-        return await self._extract_financials(filing)
+        # Validate CIK
+        if not cik.isdigit() or len(cik) != 10:
+            raise ValueError("CIK must be a 10-digit numeric string")
+        if not self.session_id:
+            self.session_id = await self._create_session()
+        # Navigate to EDGAR search page
+        edgar_search_url = f"{self.edgar_url}/search"
+        if not await self.navigate(edgar_search_url):
+            raise MCPServerConnectionError(self.mcp_server_url, "Failed to navigate to EDGAR search page")
+        # Perform search and extract financials
+        logger.info(f"Searching for {form_type} filings for CIK {cik}, year {year}, period {fiscal_period}")
+        # Note: The actual search and extraction logic would depend on the MCP server's capabilities
+        # This is a placeholder for the actual search and extraction logic
+        filing = await _search_filings(search)
+        if not filing:
+            raise ValueError(f"No filings found for CIK {cik}, form type {form_type}, year {year}")
+        financials = await _extract_financials(filing)
+        if not financials:
+            raise ValueError(f"No financial metrics found for CIK {cik}, form type {form_type}, year {year}")
+        logger.info(f"Successfully extracted financials for CIK {cik}, form type {form_type}, year {year}")
+        return financials
+    
