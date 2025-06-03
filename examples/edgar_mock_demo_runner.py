@@ -57,6 +57,9 @@ async def run_demo(server_url=None, extract_data=False, mock_mode=False):
                 output_path = save_financial_data(financial_data, current_dir)
                 print(f"\nData saved to {output_path}")
         
+        # Test for specialized extraction methods
+        await test_specialized_extraction()
+
         return
     
     # Check MCP server connection if not in mock mode
@@ -85,6 +88,65 @@ async def run_demo(server_url=None, extract_data=False, mock_mode=False):
         if response == 'y':
             # Run the demo again in mock mode
             await run_demo(server_url, extract_data, mock_mode=True)
+
+async def test_specialized_extraction():
+    """Test the specialized extraction methods for annual and quarterly reports."""
+    print("\n===== Testing Specialized Financial Extraction =====\n")
+    
+    from src.edgar.client.client import EdgarClient
+    from src.edgar.client.scraper import EdgarScraper
+    from src.edgar.models import SecFiling
+    from datetime import datetime
+    
+    # Create a mock filing for testing - now with file_number included
+    mock_annual_filing = SecFiling(
+        cik="0001318605",
+        company_name="Tesla, Inc.",
+        form_type="10-K",
+        filing_date=datetime.now(),
+        document_url="https://www.sec.gov/mock/filing",
+        file_number="001-12345"  # Added missing required field
+    )
+    # Add year attribute manually
+    mock_annual_filing.year = 2024
+    
+    mock_quarterly_filing = SecFiling(
+        cik="0001318605",
+        company_name="Tesla, Inc.",
+        form_type="10-Q", 
+        filing_date=datetime.now(),
+        document_url="https://www.sec.gov/mock/filing",
+        year=2024,
+        file_number="001-12345"  # Added missing required field
+    )
+    # Add year attribute manually
+    mock_annual_filing.year = 2024
+    
+    # Create scraper
+    scraper = EdgarScraper()
+    
+    try:
+        # Test annual statement extraction
+        print("Extracting annual income statement...")
+        annual_financials = await scraper.extract_annual_income_statement(
+            mock_annual_filing,
+            fiscal_year=2024
+        )
+        print(f"✅ Successfully extracted annual financials for {annual_financials.company_name}")
+        print(f"Revenue: ${annual_financials.revenue}")
+        
+        # Test quarterly statement extraction
+        print("\nExtracting quarterly income statement...")
+        quarterly_financials = await scraper.extract_quarterly_income_statement(
+            mock_quarterly_filing,
+            quarter="Q2",
+            fiscal_year=2024
+        )
+        print(f"✅ Successfully extracted Q2 financials for {quarterly_financials.company_name}")
+        print(f"Quarter: {quarterly_financials.quarter}")
+        print(f"Revenue: ${quarterly_financials.revenue}")
+    except Exception as e:
+        print(f"❌ Error during specialized extraction test: {e}")
 
 def parse_args():
     parser = argparse.ArgumentParser(description="MCP server and SEC EDGAR data extraction demo")
