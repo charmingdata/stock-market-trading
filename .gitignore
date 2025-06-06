@@ -1,0 +1,51 @@
+# Python virtual environments
+venv_mcp_edgar/
+venv/
+env/
+.env/
+.venv/
+ENV/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE specific files
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+*.env
+credentials.json
+secrets.yaml
+*_key.json
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Log files
+*.log
+logs/
+
+# Local data files
+*.csv
+*.xlsx
+*.db
+*.sqlite3
+
+# MCP specific (if any)
+mcp_cache/
