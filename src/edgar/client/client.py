@@ -13,7 +13,7 @@ class EdgarClient:
         self.headers = {
             "User-Agent": user_agent or "SEC Edgar Research bot@example.com"
         }
-        self.session = None  # Add this line to fix the first error
+        self.session = None
         logger.info(f"EdgarClient initialized with MCP server at {mcp_server_url}")
         
     async def __aenter__(self):
@@ -51,13 +51,13 @@ class EdgarClient:
         
         # This is a stub implementation for testing - use the cik parameter value
         return FinancialStatementItems(
-            cik=cik,  # Use the parameter value instead of hardcoded value
+            cik=cik,
             company_name="Tesla, Inc.",
-            form_type=form_type,  # Use parameter value
+            form_type=form_type,
             filing_date=datetime.now(),
             document_url="https://www.sec.gov/Archives/123",
-            fiscal_year=year or 2024,  # Use parameter value if provided
-            quarter=fiscal_period if fiscal_period else "Q1",  # Use parameter value if provided
+            fiscal_year=year or 2024,
+            quarter=fiscal_period if fiscal_period else "Q1",
             revenue="23.33",
             operating_income="5.00",
             net_income="2.51",
@@ -80,7 +80,7 @@ class EdgarClient:
         cik = getattr(filing, 'cik', "1318605")
         
         return FinancialStatementItems(
-            cik=cik,  # Use the CIK from the filing object
+            cik=cik,
             company_name="Tesla, Inc.",
             form_type="10-Q",
             filing_date=datetime.now(),

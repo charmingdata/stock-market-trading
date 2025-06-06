@@ -1,7 +1,6 @@
 import pytest
 from datetime import datetime
 from unittest.mock import AsyncMock, patch
-
 import os
 import sys
 sys.path.append(
@@ -39,3 +38,6 @@ async def test_search_tesla_filings():
         
         # Verify we got a result with expected structure
         assert len(results) == 1
+        assert isinstance(results[0], SecFiling)
+        assert results[0].company_name == "Tesla, Inc."
+        assert results[0].form_type == "10-K"

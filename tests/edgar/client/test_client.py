@@ -10,9 +10,9 @@ sys.path.append(
         os.path.dirname(
             os.path.dirname(os.path.abspath(__file__))))))
 from src.edgar.client.client import EdgarClient
+from src.edgar.client.search_params import EdgarSearch
 from src.edgar.models.edgar_filings import SecFiling
 from src.edgar.models.financial_statement_items import FinancialStatementItems
-from src.edgar.client.search_params import EdgarSearch
 
 @pytest.mark.asyncio
 async def test_client_initialization():
@@ -96,6 +96,22 @@ async def test_get_10q_metrics():
         assert metrics.quarter == "Q1"
         assert metrics.fiscal_year == 2024
 
+# This is now implemented in the client class
+# async def get_10q_metrics(
+#     self,
+#     cik: str,
+#     year: int,
+#     quarter: Literal["Q1", "Q2", "Q3", "Q4"],
+#     mock_data: Optional[Dict] = None
+# ) -> FinancialStatementItems:
+#     """Get 10-Q financial metrics for a specific quarter."""
+#     return await self.get_company_financials(
+#         cik=cik,
+#         form_type="10-Q",
+#         fiscal_period=quarter,
+#         year=year
+#     )
+
 @pytest.mark.asyncio
 async def test_company_search():
     """Test SEC EDGAR company search integration."""
@@ -134,7 +150,7 @@ async def test_get_company_financials(monkeypatch):
     # Dummy SecFiling and FinancialStatementItems
     dummy_filing = object()
     dummy_metrics = FinancialStatementItems.model_validate({
-        "cik": "0001318605",  # 10 digits required
+        "cik": "1318605",
         "company_name": "Tesla, Inc.",
         "form_type": "10-Q",
         "filing_date": datetime.now().isoformat(),
@@ -145,7 +161,7 @@ async def test_get_company_financials(monkeypatch):
         "eps_basic": "0.85",
         "eps_diluted": "0.80",
         "cash_and_equivalents": "100.00",
-        "fiscal_year": 2024,  # Add this required field (not 'year')
+        "fiscal_year": 2024,  # Changed from "year" to "fiscal_year"
         "document_url": "https://www.sec.gov/Archives/123"
     })
 
