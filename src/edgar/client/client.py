@@ -7,8 +7,12 @@ logger = logging.getLogger(__name__)
 class EdgarClient:
     """Client for interacting with SEC EDGAR via MCP."""
     
-    def __init__(self, mcp_server_url="http://localhost:3000", user_agent=None):
+    def __init__(self, mcp_server_url="https://localhost:3000", user_agent=None):
         """Initialize the EdgarClient with MCP server configuration."""
+        # Enforce HTTPS for MCP server URL to protect session/token transmission
+        if not mcp_server_url.lower().startswith("https://"):
+            logger.warning(f"Insecure MCP server URL '{mcp_server_url}' detected. Use 'https://' URLs only.")
+            raise ValueError("Insecure MCP server URL: only 'https://' is allowed for mcp_server_url to protect session data.")
         self.mcp_server_url = mcp_server_url
         self.headers = {
             "User-Agent": user_agent or "SEC Edgar Research bot@example.com"
