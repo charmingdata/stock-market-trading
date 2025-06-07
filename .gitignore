@@ -1,5 +1,12 @@
-# Python, incl. bytecode
-# Python
+# Python virtual environments
+venv_mcp_edgar/
+venv/
+env/
+.env/
+.venv/
+ENV/
+
+# Python cache files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -8,27 +15,38 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 
-# Distribution/packaging
+# IDE specific files
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+*.env
+credentials.json
+secrets.yaml
+*_key.json
+
+# Distribution / packaging
 dist/
 build/
 *.egg-info/
+.eggs/
 
-# Virtual 
-venv_mcp_edgar/
-venv/
-env/
-.env/
-.venv/
+# Jupyter Notebook
+.ipynb_checkpoints
 
-# IDE settings
-.vscode/
-!.vscode/extensions.json
-.idea/
+# Log files
+*.log
+logs/
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
+# Local data files
+*.csv
+*.xlsx
+*.db
+*.sqlite3
 
-# Project specific
-**/archive/
+# MCP specific (if any)
+mcp_cache/
