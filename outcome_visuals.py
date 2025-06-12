@@ -254,4 +254,4 @@ def update_dashboard(selected_month):
     return fig_pie, fig_bar, fig_long_short, table_data
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(port=8000)
