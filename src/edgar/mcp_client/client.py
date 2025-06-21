@@ -3,6 +3,7 @@ import os
 import ssl
 from typing import Dict, Any, Optional, Literal
 from datetime import datetime
+from ..models.financial_statement_items import FinancialStatementItems
 
 logger = logging.getLogger(__name__)
 
@@ -77,9 +78,7 @@ class EdgarClient:
         self.session = None
         
     async def get_company_financials(self, cik: str, form_type: str, fiscal_period: str = None, year: int = None):
-        """Get financial data for a company."""
-        from src.edgar.models.financial_statement_items import FinancialStatementItems
-        
+        """Get financial data for a company."""        
         # This is a stub implementation for testing - use the cik parameter value
         return FinancialStatementItems(
             cik=cik,
