@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from src.edgar.sec_edgar_extraction.ingest_income_statement import (
     extract_net_sales,
     extract_net_income,
@@ -39,10 +40,30 @@ def test_get_income_statement(monkeypatch):
         tree=None,
         cik="0000320193",
         form_type="10-Q",
-        filing_date="2024-03-30",
+        filing_date=datetime(2024, 3, 30),
         document_url="http://example.com",
         fiscal_year=2024,
         fiscal_quarter=2,
     )
     assert result.revenue == 95359.0
     assert result.net_income == 24780.0
+
+def test_get_income_statement_no_section(monkeypatch):
+    def fake_find_income_statement(tree):
+        return None
+
+    monkeypatch.setattr(
+        "src.edgar.sec_edgar_extraction.ingest_income_statement.find_income_statement",
+        fake_find_income_statement,
+    )
+
+    with pytest.raises(ValueError, match="Income Statement section not found."):
+        get_income_statement(
+            tree=None,
+            cik="0000320193",
+            form_type="10-Q",
+            filing_date=datetime(2024, 3, 30),
+            document_url="http://example.com",
+            fiscal_year=2024,
+            fiscal_quarter=2,
+        )
