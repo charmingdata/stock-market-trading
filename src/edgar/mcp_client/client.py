@@ -3,6 +3,7 @@ import os
 import ssl
 from typing import Dict, Any, Optional, Literal
 from datetime import datetime
+from urllib.parse import urlparse  # Added for secure hostname checking
 from ..models.financial_statement_items import FinancialStatementItems
 
 logger = logging.getLogger(__name__)
@@ -17,8 +18,10 @@ class EdgarClient:
         self.mcp_server_url = mcp_server_url if mcp_server_url is not None else default_url
         
         # Enforce HTTPS for MCP server URL to protect session/token transmission
-        # Allow HTTP only for localhost development environments
-        is_localhost = "localhost" in self.mcp_server_url or "127.0.0.1" in self.mcp_server_url
+        # Allow HTTP only for localhost development environments using strict hostname checks
+        parsed_url = urlparse(self.mcp_server_url)
+        hostname = parsed_url.hostname
+        is_localhost = hostname in ("localhost", "127.0.0.1", "::1", "[::1]")
         is_secure = self.mcp_server_url.lower().startswith("https://")
         
         if not (is_secure or (is_localhost and self.mcp_server_url.lower().startswith("http://"))):
