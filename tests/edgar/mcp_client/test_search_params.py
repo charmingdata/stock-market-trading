@@ -8,7 +8,7 @@ sys.path.append(
         os.path.dirname(
             os.path.dirname(os.path.abspath(__file__))))))
 
-from src.edgar.client.search_params import EdgarSearch
+from src.edgar.mcp_client.search_params import EdgarSearch
 from src.edgar.models.edgar_filings import SecFiling
 
 @pytest.mark.asyncio

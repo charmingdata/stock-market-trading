@@ -9,8 +9,8 @@ sys.path.append(
     (os.path.dirname(
         os.path.dirname(
             os.path.dirname(os.path.abspath(__file__))))))
-from src.edgar.client.client import EdgarClient
-from src.edgar.client.search_params import EdgarSearch
+from src.edgar.mcp_client.client import EdgarClient
+from src.edgar.mcp_client.search_params import EdgarSearch
 from src.edgar.models.edgar_filings import SecFiling
 from src.edgar.models.financial_statement_items import FinancialStatementItems
 
@@ -111,6 +111,17 @@ async def test_get_10q_metrics():
 #         fiscal_period=quarter,
 #         year=year
 #     )
+
+@pytest.mark.asyncio
+async def test_tesla_latest_quarterly_revenue():
+    client = EdgarClient()
+    cik = "0001318605"  # Tesla CIK
+    year = 2024
+    quarter = 1  # Adjust as needed
+    result = client.get_quarterly_financials(cik, year, quarter)
+    # Replace with the actual expected value from EDGAR
+    expected_revenue = 25000000000  # e.g., $25B
+    assert result['revenue'] == expected_revenue
 
 @pytest.mark.asyncio
 async def test_company_search():
